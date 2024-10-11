@@ -1,0 +1,24 @@
+version: "3.8"
+services:
+  app:
+    # Build the image using the production Dockerfile
+    build:
+      context: .
+      dockerfile: prod.Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      FLASK_ENV: production
+      FLASK_APP: src/app
+    restart: always  # Ensure the app restarts automatically if it crashes
+    deploy:
+      replicas: 1  # You can adjust this for scaling, if needed
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: "512M"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

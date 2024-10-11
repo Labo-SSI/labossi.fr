@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  app:
+    # Build the image using the development Dockerfile
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    ports:
+      - "5000:5000"  # Expose Flask's default port
+    volumes:
+      - .:/app  # Mount the current directory to the /app folder in the container
+    environment:
+      FLASK_ENV: development  # Ensure Flask is in development mode
+      FLASK_DEBUG: 1          # Enable debug mode for live reload
+      FLASK_RUN_HOST: 0.0.0.0
+    command: flask run --host=0.0.0.0 --reload
+    restart: always
