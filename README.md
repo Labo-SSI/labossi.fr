@@ -12,6 +12,8 @@ docker compose -f docker-compose-dev.yml up --build
 ## Running prod profile
 
 ```bash
+## Stop the current server
+docker compose down
 ## Daemonized
 docker compose -f docker-compose-prod.yml up --build -d
 # attach to output
