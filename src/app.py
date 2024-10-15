@@ -1,74 +1,103 @@
-from flask import Flask, render_template, send_from_directory
-from flask_talisman import Talisman
+from flask import Flask, render_template, send_from_directory, jsonify
 import os
+import requests
+import time
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
-# csp = {
-#     'default-src': "'self'",
-#     'script-src': [
-#         "'self'",
-#         'https://cdn.tailwindcss.com',
-#         "'unsafe-inline'"  # This allows inline scripts
-#     ],
-#     'style-src': [
-#         "'self'",
-#         'https://cdn.tailwindcss.com',
-#         "'unsafe-inline'"  # This allows inline styles
-#     ]
-# }
-# Talisman(app, content_security_policy=csp)
 
 # Upcoming workshop details
 workshop = {
-    "title": "Advanced Network Security",
-    "description": "Learn about the latest techniques in network security and how to implement them.",
-    "instructor": "Jane Doe, CISSP",
-    "date": "July 15, 2023",
-    "time": "2:00 PM - 5:00 PM",
-    "signup_link": "https://forms.gle/exampleGoogleFormLink"
+    "title": "Les bases de l'analyse forensique sur la mémoire",
+    "description": "Prérequis: Une machine linux, Python 3.8 ou supérieur",
+    "prof": "Léo Rouger",
+    "date": "23 Octobre 2024",
+    "max_pers": "10",
+    "lien": "https://forms.gle/exampleGoogleFormLink"
 }
 
-# Upcoming CTFs
-ctfs = [
-    {"name": "DEF CON CTF", "date": "August 10-13, 2023"},
-    {"name": "CSAW CTF", "date": "September 15-17, 2023"},
-    {"name": "picoCTF", "date": "October 1-15, 2023"}
-]
+cached_ctf_data = None
+last_fetched_time = None
+CACHE_DURATION = 24 * 60 * 60
 
-# Upcoming guests
-guests = [
-    {"name": "John Smith", "title": "Senior Security Researcher at TechCorp"},
-    {"name": "Alice Johnson", "title": "Ethical Hacker and Bug Bounty Hunter"},
-    {"name": "Bob Williams", "title": "Cybersecurity Professor at Cyber University"}
-]
+def fetch_ctf_data():
+    global cached_ctf_data, last_fetched_time
 
-# Projects
-projects = [
-    {
-        "name": "CTF Team",
-        "description": "Participate in Capture The Flag competitions to enhance our skills."
-    },
-    {
-        "name": "Open Source Forensic Tool",
-        "description": "Developing a forensic analysis tool for the cybersecurity community."
-    },
-    {
-        "name": "CTF Creation",
-        "description": "Design and host our own Capture The Flag challenges."
-    },
-    {
-        "name": "Bug Bounty Program",
-        "description": "Collaborate on finding and reporting security vulnerabilities in real-world applications."
-    },
-    {
-        "name": "CVE Research",
-        "description": "Conduct code reviews on open-source projects to identify potential vulnerabilities and submit CVEs."
+    if cached_ctf_data and last_fetched_time:
+        time_since_last_fetch = time.time() - last_fetched_time
+        if time_since_last_fetch < CACHE_DURATION:
+            return cached_ctf_data
+
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Linux i640) Gecko/20100101 Firefox/47.3'
     }
-]
+    try:
+        response = requests.get(
+            f'https://ctftime.org/api/v1/events/?limit=4&start={int(time.time())}&finish={int((datetime.now() + timedelta(days=10)).timestamp())}', 
+            headers=headers
+        )
+        response.raise_for_status()
+        cached_ctf_data = response.json()
+        last_fetched_time = time.time()
+        return cached_ctf_data
+
+    except requests.exceptions.HTTPError as http_err:
+        print(f'HTTP error occurred: {http_err}')
+        return None
+    except Exception as err:
+        print(f'Other error occurred: {err}')
+        return None
+
+def format_date(iso_date):
+    parsed_date = datetime.fromisoformat(iso_date.rstrip('Z'))
+    return parsed_date.strftime('%B %d, %Y')
 
 @app.route('/')
 def index():
+    ctf_data = fetch_ctf_data()
+
+    if ctf_data:
+        ctfs = [
+            {"name": event['title'], "date": format_date(event['start']), "url": event['url']} for event in ctf_data
+        ]
+    else:
+        ctfs = [
+            {"name": "Cannot update", "date": "", "url": "#"}
+           
+        ]
+
     return render_template('index.html', workshop=workshop, ctfs=ctfs, guests=guests)
+
+guests = [
+    {"name": "Pierre Dupont", "title": "Chercheur principal en sécurité chez CyberDéfense"},
+    {"name": "Sophie Martin", "title": "Hackeuse éthique et chasseuse de primes de bogues"},
+    {"name": "Luc Lefebvre", "title": "Professeur de cybersécurité à l'Université de Technologie"}
+]
+
+
+projects = [
+    {
+        "name": "Équipe CTF",
+        "description": "Participer à des compétitions Capture The Flag pour améliorer nos compétences."
+    },
+    {
+        "name": "Outil Forensique Open Source",
+        "description": "Développer un outil d'analyse forensique pour la communauté de la cybersécurité."
+    },
+    {
+        "name": "Création de CTF",
+        "description": "Concevoir et organiser nos propres challs Capture The Flag."
+    },
+    {
+        "name": "Programme de Bug Bounty",
+        "description": "Collaborer pour identifier et signaler des vulnérabilités de sécurité dans des applications réelles."
+    },
+    {
+        "name": "Recherche CVE",
+        "description": "Effectuer des revues de code sur des projets open source pour identifier des vulnérabilités potentielles et soumettre des CVE."
+    }
+]
+
 
 @app.route('/projects')
 def project_page():
