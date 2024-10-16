@@ -13,7 +13,7 @@ workshop = {
     "prof": "Léo Rouger",
     "date": "23 Octobre 2024",
     "max_pers": "10",
-    "lien": "https://forms.gle/exampleGoogleFormLink"
+    "lien": "https://docs.google.com/forms/d/e/1FAIpQLSeA_tahWQggtCUo5YLiLijGbJvLxM82_mOQ2eCjQsr8XCkMXA/viewform?usp=sf_link"
 }
 
 cached_ctf_data = None
@@ -69,9 +69,9 @@ def index():
     return render_template('index.html', workshop=workshop, ctfs=ctfs, guests=guests)
 
 guests = [
-    {"name": "Pierre Dupont", "title": "Chercheur principal en sécurité chez CyberDéfense"},
-    {"name": "Sophie Martin", "title": "Hackeuse éthique et chasseuse de primes de bogues"},
-    {"name": "Luc Lefebvre", "title": "Professeur de cybersécurité à l'Université de Technologie"}
+    # {"name": "Coming soon", "title": ""},
+    # {"name": "Coming soon", "title": ""},
+    # {"name": "Coming soon", "title": ""}
 ]
 
 
