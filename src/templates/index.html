@@ -50,7 +50,6 @@
         </div>
     </nav>
 
-    <!-- Mobile side menu -->
     <div id="mobile-menu" class="fixed inset-y-0 right-0 w-64 bg-white dark:bg-dark-card shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
         <div class="p-6 space-y-4">
             <a href="/projects" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200 dark:hover:bg-gray-700">Projets</a>
@@ -110,7 +109,6 @@
             mobileMenu.classList.toggle('translate-x-full');
         });
 
-        // Close the mobile menu when clicking outside of it
         document.addEventListener('click', (event) => {
             if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
                 mobileMenu.classList.add('translate-x-full');
