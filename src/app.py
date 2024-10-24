@@ -1,5 +1,4 @@
 from flask import Flask, render_template, send_from_directory, jsonify
-import os
 import requests
 import time
 from datetime import datetime, timedelta
@@ -98,14 +97,13 @@ projects = [
     }
 ]
 
-
 @app.route('/projects')
 def project_page():
     return render_template('projects.html', projects=projects)
 
 @app.route('/flag.txt')
 def flag():
-    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'flag.txt')
+    return send_from_directory('static', 'flag.txt')
 
 if __name__ == '__main__':
     app.run(debug=False)
