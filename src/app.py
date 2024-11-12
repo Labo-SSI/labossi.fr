@@ -7,12 +7,11 @@ app = Flask(__name__)
 
 # Upcoming workshop details
 workshop = {
-    "title": "Les bases de l'analyse forensique sur la mémoire",
-    "description": "Prérequis: Une machine linux, Python 3.8 ou supérieur",
-    "prof": "Léo Rouger",
-    "date": "23 Octobre 2024",
-    "max_pers": "10",
-    "lien": "https://docs.google.com/forms/d/e/1FAIpQLSeA_tahWQggtCUo5YLiLijGbJvLxM82_mOQ2eCjQsr8XCkMXA/viewform?usp=sf_link"
+    "title": "Les bases du reverse engineering",
+    "description": "Prérequis: Une machine linux, Ghidra et GEF",
+    "prof": "Geoffrey Diederichs",
+    "date": "13 Novembre 2024",
+    "max_pers": "15",
 }
 
 cached_ctf_data = None
