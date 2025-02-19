@@ -7,11 +7,11 @@ app = Flask(__name__)
 
 # Upcoming workshop details
 workshop = {
-    "title": "Les bases du reverse engineering",
-    "description": "Prérequis: Une machine linux, Ghidra et GEF",
-    "prof": "Geoffrey Diederichs",
-    "date": "13 Novembre 2024",
-    "max_pers": "15",
+    "title": "Pentest réseau avec le labo infra",
+    # "description": "",
+    "prof": "Labo Infra",
+    "date": "23 avril 2025",
+    "max_pers": "20",
 }
 
 cached_ctf_data = None
@@ -67,7 +67,7 @@ def index():
     return render_template('index.html', workshop=workshop, ctfs=ctfs, guests=guests)
 
 guests = [
-    # {"name": "Coming soon", "title": ""},
+    {"name": "charb66", "title": "Methodologie pour la CPTS"},
     # {"name": "Coming soon", "title": ""},
     # {"name": "Coming soon", "title": ""}
 ]
